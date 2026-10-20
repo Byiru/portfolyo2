@@ -250,19 +250,29 @@ function setStatus(status) {
 
 let dcGameStart = null;
 
-// ikonu göster; yüklenemezse emojiye düş
-function setGameIcon(url) {
+// ikonu sırayla dene; hepsi başarısız olursa emojiye düş
+function setGameIcon(urls) {
   if (!dcGameIcon) return;
 
-  dcGameIcon.classList.remove("is-hidden");
-  dcGameIcon.onerror = () => {
-    dcGameIcon.onerror = null;
-    dcGameIcon.classList.add("is-hidden");
+  const list = (Array.isArray(urls) ? urls : [urls]).filter(Boolean);
+  let i = 0;
+
+  const attempt = () => {
+    if (i >= list.length) {
+      dcGameIcon.onerror = null;
+      dcGameIcon.classList.add("is-hidden");
+      return;
+    }
+
+    dcGameIcon.src = list[i++];
   };
-  dcGameIcon.src = url;
+
+  dcGameIcon.onerror = attempt;
+  dcGameIcon.classList.remove("is-hidden");
+  attempt();
 }
 
-// uygulama ikon kaynakları (birincil çalışan → yedek)
+// uygulama ikon kaynakları (sırayla denenir)
 function appIconSources(appId) {
   return [
     `https://dcdn.dstn.to/app-icons/${appId}`,
@@ -313,8 +323,8 @@ function renderActivity(activity) {
   if (iconUrl) {
     setGameIcon(iconUrl);
   } else if (appId) {
-    // uygulamanın kendi ikonu (LoL, Valorant, VS Code...) — yedek zincirli
-    setGameIcon(appIconSources(appId)[0]);
+    // uygulamanın kendi ikonu (LoL, Valorant, VS Code...) — yedekli
+    setGameIcon(appIconSources(appId));
   } else if (dcGameIcon) {
     dcGameIcon.classList.add("is-hidden");
   }
