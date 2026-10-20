@@ -1,19 +1,16 @@
-# 🚀 Portfolyo — Bento / Glassmorphism
+# 🚀 Portfolyo — Minimal / Glassmorphism
 
-Koyu temalı, bento grid düzeninde kişisel portfolyo sitesi.
+Koyu temalı, sade kişisel portfolyo sitesi.
 **HTML + CSS + vanilla JavaScript** ile yazıldı — build adımı veya bağımlılık yok.
 
 🔗 **Canlı:** https://byiru.github.io/portfolyo2/
 
 ## ✨ Özellikler
 
-- 🧩 Bento grid + glassmorphism kartlar
 - 🌌 Animasyonlu gradient arka plan (aurora) ve ince grid dokusu
 - 🖱️ İmleci takip eden ışık efekti (masaüstü)
 - 🎴 Profil kartında 3D eğim (tilt) efekti
 - ⌨️ Yazı makinesi animasyonu (rol değişimi)
-- 📊 Kaydırınca dolan yetenek çubukları + yüzde sayacı
-- 🗂️ Filtrelenebilir proje kartları (Tümü / Web / Araç / Deney)
 - 🧭 Kaydırma ilerleme çubuğu ve otomatik aktif menü
 - 💬 Canlı Discord durumu (Lanyard) + Spotify çalar (kapak, ilerletme çubuğu, baştan sarma)
 - 📱 Tamamen mobil uyumlu, açılır menü
@@ -42,23 +39,12 @@ Koyu temalı, bento grid düzeninde kişisel portfolyo sitesi.
 |---|---|
 | İsim, ünvan, tanıtım | `index.html` → `.hero` bölümü (`[DÜZENLE]` yorumları) |
 | Profil kartı bilgileri | `index.html` → `#profileCard` |
-| Yetenekler ve yüzdeler | `index.html` → `data-level="80"` (0–100) |
-| Öğrenilen teknolojiler | `index.html` → `.learning__item` (`--w:70%`) |
-| Araç kutusu etiketleri | `index.html` → `.tags` |
-| Projeler | `index.html` → `#projects` içindeki `.project` kartları |
+| Bölüm başlığı | `index.html` → `#su-an` |
 | Sosyal medya linkleri | `index.html` → hero, nav ve footer |
 | Discord kullanıcı ID | `js/script.js` → `DISCORD_ID` |
 | Öne çıkan Spotify parçası | `js/script.js` → `FEATURED_TRACK` |
 | Renkler | `css/style.css` → `:root` (`--violet`, `--fuchsia`, `--cyan`) |
 | Yazı makinesi rolleri | `js/script.js` → `roles` dizisi |
-
-### Yeni proje kartı eklemek
-
-`#projects` içine mevcut kartlardan birini kopyala ve şunları değiştir:
-
-- `data-category` → `web`, `arac` veya `deney`
-- `thumb--1` … `thumb--6` → hazır gradientlerden biri
-- Başlık, açıklama, etiketler ve linkler
 
 ## 💬 Discord + Spotify
 
@@ -83,12 +69,12 @@ Canlı şarkı yokken (veya Lanyard henüz aktif değilken) kartta çalan varsay
 
 ```js
 const FEATURED_TRACK = {
-  id: "7uI6R3KoJWxuXjvBHIr5lW", // Spotify parça ID'si
+  id: "7uI6R3KoJWxuXjvBHIr5lW", // Spotify parça ID'si ("" → çalar gizlenir)
   label: "Kod yazarken",
 };
 ```
 
-Spotify'da bir parçayı aç → **Paylaş → Bağlantıyı kopyala** → linkteki `track/` sonrası 22 karakterlik kısmı `id` alanına yaz.
+Spotify'da bir parçayı aç → **Paylaş → Bağlantıyı kopyala** → linkteki `track/` sonrası 22 karakterlik kısmı `id` alanına yaz. Canlı şarkı yokken çaların görünmesini istemiyorsan `id` alanını boş bırak.
 
 ## 🚀 GitHub Pages ile yayınlama
 

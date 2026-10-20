@@ -645,6 +645,9 @@ body.glow-on .glow { opacity: 1; }
   scroll-margin-top: 96px;
 }
 
+/* tek bölüm: hero ile arasındaki boşluğu daralt */
+#su-an { padding-top: 0; }
+
 .section-head {
   max-width: 660px;
   margin: 0 auto 48px;
@@ -939,7 +942,11 @@ body.glow-on .glow { opacity: 1; }
 
 .dc-user:hover .dc-user__arrow { color: var(--text); transform: translate(1px, -1px); }
 
-.np { min-width: 0; }
+.np {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
 
 .np[hidden] { display: none; }
 

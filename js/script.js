@@ -92,37 +92,6 @@ if ("IntersectionObserver" in window) {
   revealEls.forEach((el) => el.classList.add("in"));
 }
 
-/* ---------- yetenek çubukları ---------- */
-const skillObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-
-      const skill = entry.target;
-      const level = Math.min(Number(skill.dataset.level) || 0, 100);
-      const fill = skill.querySelector(".skill__fill");
-      const pct = skill.querySelector(".skill__pct");
-
-      if (fill) fill.style.width = `${level}%`;
-
-      if (pct) {
-        let current = 0;
-        const step = Math.max(1, Math.round(level / 34));
-        const timer = setInterval(() => {
-          current = Math.min(current + step, level);
-          pct.textContent = `${current}%`;
-          if (current >= level) clearInterval(timer);
-        }, 28);
-      }
-
-      skillObserver.unobserve(skill);
-    });
-  },
-  { threshold: 0.4 }
-);
-
-document.querySelectorAll(".skill").forEach((el) => skillObserver.observe(el));
-
 /* ---------- yazı makinesi ---------- */
 const typedEl = document.getElementById("typed");
 const roles = ["Frontend Developer", "Web Tasarımcı", "Problem Çözücü"];
@@ -210,35 +179,6 @@ if (profileCard && profileWrap && finePointer && !reduceMotion) {
   });
 }
 
-/* ---------- proje filtreleri ---------- */
-const filterButtons = Array.from(document.querySelectorAll(".filter"));
-const projectCards = Array.from(document.querySelectorAll(".project"));
-
-filterButtons.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    filterButtons.forEach((b) => {
-      b.classList.remove("is-active");
-      b.setAttribute("aria-selected", "false");
-    });
-    btn.classList.add("is-active");
-    btn.setAttribute("aria-selected", "true");
-
-    const filter = btn.dataset.filter;
-
-    projectCards.forEach((card) => {
-      const show = filter === "all" || card.dataset.category === filter;
-
-      if (show) {
-        card.classList.remove("is-hidden", "pop");
-        void card.offsetWidth; // animasyonu yeniden başlat
-        card.classList.add("pop");
-      } else {
-        card.classList.add("is-hidden");
-      }
-    });
-  });
-});
-
 /* ---------- yukarı çık ---------- */
 const toTop = document.getElementById("toTop");
 
@@ -278,7 +218,7 @@ const defaultAvatar = (() => {
   }
 })();
 
-/* canlı şarkı yokken çalan "öne çıkan" parça (Spotify linkini değiştirerek güncelleyebilirsin) */
+/* canlı şarkı yokken çalar; track_id boş bırakırsan çalar gizlenir */
 const FEATURED_TRACK = {
   id: "7uI6R3KoJWxuXjvBHIr5lW",
   label: "Kod yazarken",
@@ -343,19 +283,22 @@ if (dcAvatar) {
 function setPlayer(trackId, label) {
   if (!np || !npEmbed) return;
 
+  // canlı şarkı yok ve öne çıkan parça tanımlı değilse çaları gizle
+  if (!trackId) {
+    npEmbed.removeAttribute("src");
+    np.hidden = true;
+    return;
+  }
+
   np.hidden = false;
   if (npLabel) npLabel.textContent = label;
 
-  if (trackId && currentTrackKey !== trackId) {
+  if (currentTrackKey !== trackId) {
     currentTrackKey = trackId;
     npEmbed.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
   }
 
-  if (npOpen) {
-    npOpen.href = trackId
-      ? `https://open.spotify.com/track/${trackId}`
-      : "https://open.spotify.com";
-  }
+  if (npOpen) npOpen.href = `https://open.spotify.com/track/${trackId}`;
 }
 
 function showFeaturedTrack() {
