@@ -224,7 +224,7 @@ const FEATURED_TRACK = {
   label: "Kod yazarken",
 };
 
-let currentTrackKey = FEATURED_TRACK.id;
+let currentTrackKey = "";
 
 const STATUS_LABELS = {
   online: "çevrimiçi",
