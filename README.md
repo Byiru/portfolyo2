@@ -12,7 +12,7 @@ Koyu temalı, sade kişisel portfolyo sitesi.
 - 🎴 Profil kartında 3D eğim (tilt) efekti
 - ⌨️ Yazı makinesi animasyonu (rol değişimi)
 - 🧭 Kaydırma ilerleme çubuğu ve otomatik aktif menü
-- 💬 Canlı Discord durumu (Lanyard) + Spotify çalar (kapak, ilerletme çubuğu, baştan sarma)
+- 💬 Canlı Discord durumu (Lanyard) + oyun aktivitesi (logo, detay, süre) + Spotify çalar (kapak, ilerletme çubuğu, baştan sarma)
 - 📱 Tamamen mobil uyumlu, açılır menü
 - ♿ `prefers-reduced-motion` desteği ve klavye erişilebilirliği
 - ⚡ Sıfır bağımlılık — statik dosyalar, hızlı yükleme
@@ -60,6 +60,20 @@ Kart, [Lanyard](https://lanyard.rest) API'siyle Discord durumunu, [Spotify Embed
 Şarkı çalarken albüm kapağı, şarkı adı, ilerletme çubuğu ve Spotify logosu görünür. Çubuğa tıklayarak şarkıyı ileri/geri sarabilirsin.
 
 > Spotify'a giriş yapmış ziyaretçiler şarkının tamamını, giriş yapmamış olanlar 30 saniyelik önizlemeyi dinler. Bu, Spotify embed'inin kuralıdır (tam akış için Spotify hesabı gerekir).
+
+### Oyun / uygulama aktivitesi
+
+Discord'da bir oyun oynuyorsan (LoL, Valorant, Steam oyunları, VS Code vb.) kartta **oyun logosu + detay + "kaç dk oynuyor"** sayacı görünür.
+
+Gösterilen bilgiler Discord'un gönderdiği **zengin durum (Rich Presence)** verisinden gelir:
+
+| Alan | Kaynak |
+|---|---|
+| Logo | `assets.large_image` → yoksa uygulama ikonu (`dcdn.dstn.to/app-icons/{id}`) |
+| Detay | `details` · `state` |
+| Süre | `timestamps.start` (canlı sayar) |
+
+> ⚠️ **LoL'de şampiyon ismi gösterilemez** — resmi League of Legends istemcisi Discord'a şampiyon/KDA/seviye bilgisi **göndermiyor**, sadece oyun adı ve süreyi gönderiyor. Şampiyon bilgisi için [league-rpc](https://github.com/Its-Haze/league-rpc) gibi üçüncü parti bir LoL RPC aracı kullanman gerekir; o zaman şampiyon/skin/KDA otomatik olarak Discord'a düşer ve site bunu **otomatik** gösterir (ekstra kod gerekmez).
 
 ### Öne çıkan parça
 
