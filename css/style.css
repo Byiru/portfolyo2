@@ -708,9 +708,9 @@ body.glow-on .glow { opacity: 1; }
 
 .card--skills { grid-column: span 7; grid-row: span 2; }
 .card--toolbox { grid-column: span 5; }
-.card--discord { grid-column: span 5; }
+.card--discord { grid-column: span 12; }
 .card--learning { grid-column: span 5; }
-.card--wide { grid-column: span 7; }
+.card--wide { grid-column: span 12; }
 
 .card__head {
   display: flex;
@@ -804,7 +804,21 @@ body.glow-on .glow { opacity: 1; }
 .card--learning.in .learning__bar i { width: var(--w); }
 
 /* --- discord --- */
-.card--discord { gap: 16px; }
+.card--discord { gap: 18px; }
+
+.discord {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 22px;
+  align-items: center;
+}
+
+.discord__side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
 
 .status-pill {
   display: inline-flex;
@@ -925,38 +939,22 @@ body.glow-on .glow { opacity: 1; }
 
 .dc-user:hover .dc-user__arrow { color: var(--text); transform: translate(1px, -1px); }
 
-.np {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  border-radius: 16px;
-  background: rgba(30, 215, 96, 0.055);
-  border: 1px solid rgba(30, 215, 96, 0.18);
-}
+.np { min-width: 0; }
 
 .np[hidden] { display: none; }
 
-.np__art {
-  width: 52px; height: 52px;
-  flex: 0 0 52px;
-  border-radius: 12px;
-  object-fit: cover;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-}
-
-.np__meta {
+.np__head {
   display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1;
-  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .np__label {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -964,50 +962,39 @@ body.glow-on .glow { opacity: 1; }
   color: #4ade80;
 }
 
-.np__dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: #4ade80;
-  animation: pulse 1.8s infinite;
-}
+.np__logo { flex: 0 0 auto; color: #1db954; }
 
-.np__meta strong {
-  font-size: 0.88rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.np__artist {
-  font-size: 0.78rem;
+.np__open {
+  display: grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  flex: 0 0 auto;
+  border-radius: 8px;
   color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  border: 1px solid var(--stroke);
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
 }
 
-.np__bar {
-  height: 4px;
-  margin-top: 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  overflow: hidden;
+.np__open:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--stroke-strong);
 }
 
-.np__bar i {
-  display: block;
-  height: 100%;
-  width: 0;
-  border-radius: 999px;
-  background: #4ade80;
-  transition: width 0.9s linear;
+.np__player {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  line-height: 0;
 }
+
+.np__player iframe { display: block; width: 100%; border: 0; }
 
 .dc-idle {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 8px 2px 0;
   color: var(--muted);
   font-size: 0.82rem;
 }
@@ -1290,8 +1277,7 @@ body.glow-on .glow { opacity: 1; }
   .hero { padding-top: 148px; }
   .hero__visual { order: 2; }
   .card--skills { grid-column: span 12; grid-row: auto; }
-  .card--toolbox, .card--discord, .card--learning, .card--wide { grid-column: span 6; }
-  .pillars { grid-template-columns: 1fr; gap: 18px; }
+  .card--toolbox, .card--learning { grid-column: span 6; }
 }
 
 @media (max-width: 860px) {
@@ -1328,7 +1314,9 @@ body.glow-on .glow { opacity: 1; }
 }
 
 @media (max-width: 760px) {
-  .card--toolbox, .card--discord, .card--learning, .card--wide { grid-column: span 12; }
+  .card--toolbox, .card--learning { grid-column: span 12; }
+  .discord { grid-template-columns: 1fr; gap: 16px; }
+  .discord__side { gap: 10px; }
   .projects { grid-template-columns: 1fr; }
   .hero__float { display: none; }
 }

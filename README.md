@@ -15,6 +15,7 @@ Koyu temalı, bento grid düzeninde kişisel portfolyo sitesi.
 - 📊 Kaydırınca dolan yetenek çubukları + yüzde sayacı
 - 🗂️ Filtrelenebilir proje kartları (Tümü / Web / Araç / Deney)
 - 🧭 Kaydırma ilerleme çubuğu ve otomatik aktif menü
+- 💬 Canlı Discord durumu (Lanyard) + Spotify çalar (kapak, ilerletme çubuğu, baştan sarma)
 - 📱 Tamamen mobil uyumlu, açılır menü
 - ♿ `prefers-reduced-motion` desteği ve klavye erişilebilirliği
 - ⚡ Sıfır bağımlılık — statik dosyalar, hızlı yükleme
@@ -46,6 +47,8 @@ Koyu temalı, bento grid düzeninde kişisel portfolyo sitesi.
 | Araç kutusu etiketleri | `index.html` → `.tags` |
 | Projeler | `index.html` → `#projects` içindeki `.project` kartları |
 | Sosyal medya linkleri | `index.html` → hero, nav ve footer |
+| Discord kullanıcı ID | `js/script.js` → `DISCORD_ID` |
+| Öne çıkan Spotify parçası | `js/script.js` → `FEATURED_TRACK` |
 | Renkler | `css/style.css` → `:root` (`--violet`, `--fuchsia`, `--cyan`) |
 | Yazı makinesi rolleri | `js/script.js` → `roles` dizisi |
 
@@ -56,6 +59,36 @@ Koyu temalı, bento grid düzeninde kişisel portfolyo sitesi.
 - `data-category` → `web`, `arac` veya `deney`
 - `thumb--1` … `thumb--6` → hazır gradientlerden biri
 - Başlık, açıklama, etiketler ve linkler
+
+## 💬 Discord + Spotify
+
+Kart, [Lanyard](https://lanyard.rest) API'siyle Discord durumunu, [Spotify Embed](https://developer.spotify.com/documentation/embeds) ile de o an çalan şarkıyı gösterir.
+
+**Canlı durum için (tek seferlik):**
+
+1. https://discord.gg/lanyard sunucusuna Discord hesabınla katıl — Lanyard yalnızca sunucudaki kullanıcıları izler.
+2. Discord → **Ayarlar → Activity Privacy** → *"Display current activity as a status message"* açık olsun.
+3. Discord → **Ayarlar → Connections** → **Spotify** bağlı olsun.
+4. Spotify'da bir şarkı çal — kart otomatik olarak şarkıya geçer.
+
+Şarkı çalarken albüm kapağı, şarkı adı, ilerletme çubuğu ve Spotify logosu görünür. Çubuğa tıklayarak şarkıyı ileri/geri sarabilirsin.
+
+> Spotify'a giriş yapmış ziyaretçiler şarkının tamamını, giriş yapmamış olanlar 30 saniyelik önizlemeyi dinler. Bu, Spotify embed'inin kuralıdır (tam akış için Spotify hesabı gerekir).
+
+### Öne çıkan parça
+
+Canlı şarkı yokken (veya Lanyard henüz aktif değilken) kartta çalan varsayılan parça:
+
+`js/script.js` → `FEATURED_TRACK`
+
+```js
+const FEATURED_TRACK = {
+  id: "7uI6R3KoJWxuXjvBHIr5lW", // Spotify parça ID'si
+  label: "Kod yazarken",
+};
+```
+
+Spotify'da bir parçayı aç → **Paylaş → Bağlantıyı kopyala** → linkteki `track/` sonrası 22 karakterlik kısmı `id` alanına yaz.
 
 ## 🚀 GitHub Pages ile yayınlama
 

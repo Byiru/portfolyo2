@@ -262,10 +262,9 @@ const dcDot = document.getElementById("dcDot");
 const dcStatusPill = document.getElementById("dcStatusPill");
 const dcStatusText = document.getElementById("dcStatusText");
 const np = document.getElementById("np");
-const npArt = document.getElementById("npArt");
-const npSong = document.getElementById("npSong");
-const npArtist = document.getElementById("npArtist");
-const npProgress = document.getElementById("npProgress");
+const npEmbed = document.getElementById("npEmbed");
+const npLabel = document.getElementById("npLabel");
+const npOpen = document.getElementById("npOpen");
 const dcIdle = document.getElementById("dcIdle");
 const dcIdleText = document.getElementById("dcIdleText");
 const dcJoin = document.getElementById("dcJoin");
@@ -279,7 +278,13 @@ const defaultAvatar = (() => {
   }
 })();
 
-let spotifyTicker = null;
+/* canlı şarkı yokken çalan "öne çıkan" parça (Spotify linkini değiştirerek güncelleyebilirsin) */
+const FEATURED_TRACK = {
+  id: "7uI6R3KoJWxuXjvBHIr5lW",
+  label: "Kod yazarken",
+};
+
+let currentTrackKey = FEATURED_TRACK.id;
 
 const STATUS_LABELS = {
   online: "çevrimiçi",
@@ -335,48 +340,42 @@ if (dcAvatar) {
   }
 }
 
-function stopSpotify() {
-  if (spotifyTicker) clearInterval(spotifyTicker);
-  spotifyTicker = null;
-  if (np) np.hidden = true;
+function setPlayer(trackId, label) {
+  if (!np || !npEmbed) return;
+
+  np.hidden = false;
+  if (npLabel) npLabel.textContent = label;
+
+  if (trackId && currentTrackKey !== trackId) {
+    currentTrackKey = trackId;
+    npEmbed.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+  }
+
+  if (npOpen) {
+    npOpen.href = trackId
+      ? `https://open.spotify.com/track/${trackId}`
+      : "https://open.spotify.com";
+  }
 }
 
-function startSpotifyProgress(timestamps) {
-  if (!npProgress || !timestamps?.start || !timestamps?.end) return;
-
-  const total = timestamps.end - timestamps.start;
-  if (total <= 0) return;
-
-  const update = () => {
-    const pct = Math.min(Math.max((Date.now() - timestamps.start) / total, 0), 1);
-    npProgress.style.width = `${pct * 100}%`;
-  };
-
-  update();
-  if (spotifyTicker) clearInterval(spotifyTicker);
-  spotifyTicker = setInterval(update, 1000);
+function showFeaturedTrack() {
+  setPlayer(FEATURED_TRACK.id, FEATURED_TRACK.label);
 }
 
 function renderPresence(data) {
   setStatus(data.discord_status || "offline");
 
-  if (data.listening_to_spotify && data.spotify) {
-    const s = data.spotify;
+  const trackId = data.spotify?.track_id;
 
-    if (np && npArt && npSong && npArtist) {
-      npArt.src = s.album_art_url || "";
-      npSong.textContent = s.song || "Bilinmeyen şarkı";
-      npArtist.textContent = s.artist || "";
-      np.hidden = false;
-    }
+  if (data.listening_to_spotify && trackId) {
+    setPlayer(trackId, "Spotify'da çalıyor");
 
     if (dcIdle) dcIdle.hidden = true;
     if (dcJoin) dcJoin.hidden = true;
-    startSpotifyProgress(s.timestamps);
     return;
   }
 
-  stopSpotify();
+  showFeaturedTrack();
 
   if (dcIdle) dcIdle.hidden = false;
 
@@ -397,7 +396,7 @@ function renderPresence(data) {
 
 function renderOfflineFallback() {
   setStatus("offline");
-  stopSpotify();
+  showFeaturedTrack();
 
   if (dcIdle) dcIdle.hidden = false;
   if (dcIdleText) dcIdleText.textContent = "Canlı durum kapalı.";
