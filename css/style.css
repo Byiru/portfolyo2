@@ -1012,6 +1012,89 @@ body.glow-on .glow { opacity: 1; }
 .dc-idle a { color: #c4b5fd; font-size: 0.78rem; }
 .dc-idle a:hover { text-decoration: underline; }
 
+/* --- oyun / uygulama aktivitesi --- */
+.dc-game {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.03);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease);
+}
+
+.dc-game[hidden] { display: none; }
+
+.dc-game:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.dc-game__icon-wrap {
+  position: relative;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(34, 211, 238, 0.2));
+  border: 1px solid var(--stroke);
+}
+
+.dc-game__icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dc-game__icon.is-hidden { display: none; }
+
+.dc-game__icon-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+}
+
+.dc-game__icon-wrap:has(.dc-game__icon:not(.is-hidden)) .dc-game__icon-fallback { display: none; }
+
+.dc-game__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.dc-game__info strong {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dc-game__info span {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dc-game__time {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.74rem !important;
+  color: var(--cyan) !important;
+}
+
 /* --- nasıl çalışırım --- */
 .pillars {
   display: grid;

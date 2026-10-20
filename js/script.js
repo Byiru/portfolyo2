@@ -208,6 +208,11 @@ const npOpen = document.getElementById("npOpen");
 const dcIdle = document.getElementById("dcIdle");
 const dcIdleText = document.getElementById("dcIdleText");
 const dcJoin = document.getElementById("dcJoin");
+const dcGame = document.getElementById("dcGame");
+const dcGameIcon = document.getElementById("dcGameIcon");
+const dcGameName = document.getElementById("dcGameName");
+const dcGameDetails = document.getElementById("dcGameDetails");
+const dcGameTime = document.getElementById("dcGameTime");
 
 const defaultAvatar = (() => {
   try {
@@ -240,6 +245,110 @@ function setStatus(status) {
   if (dcStatusPill) dcStatusPill.dataset.status = safe;
   if (dcStatusText) dcStatusText.textContent = STATUS_LABELS[safe];
 }
+
+/* ---------- oyun / uygulama aktivitesi ---------- */
+
+let dcGameStart = null;
+
+// ikonu göster; yüklenemezse emojiye düş
+function setGameIcon(url) {
+  if (!dcGameIcon) return;
+
+  dcGameIcon.classList.remove("is-hidden");
+  dcGameIcon.onerror = () => {
+    dcGameIcon.onerror = null;
+    dcGameIcon.classList.add("is-hidden");
+  };
+  dcGameIcon.src = url;
+}
+
+// uygulama ikon kaynakları (birincil çalışan → yedek)
+function appIconSources(appId) {
+  return [
+    `https://dcdn.dstn.to/app-icons/${appId}`,
+    `https://cdn.discordapp.com/app-icons/${appId}/0.png`,
+  ];
+}
+
+// aktiviteyi Discord kartında göster
+function renderActivity(activity) {
+  if (!dcGame) return;
+
+  if (!activity) {
+    dcGame.hidden = true;
+    return;
+  }
+
+  dcGame.hidden = false;
+
+  const name = activity.name || "Oyun";
+  if (dcGameName) dcGameName.textContent = name;
+
+  // karta tıklanınca Discord profiline gitsin
+  dcGame.href = `https://discord.com/users/${DISCORD_ID}`;
+
+  // detay: "şampiyon · mod" + süre
+  const parts = [activity.details, activity.state].filter(Boolean);
+  if (dcGameDetails) {
+    dcGameDetails.textContent = parts.join("  ·  ");
+    dcGameDetails.hidden = parts.length === 0;
+  }
+
+  // büyük görsel: Discord asset'i → yoksa uygulama ikonu
+  const assets = activity.assets || {};
+  const large = assets.large_image;
+  const small = assets.small_image;
+  const appId = activity.application_id;
+  let iconUrl = "";
+
+  if (large && /^mp:external\//.test(large)) {
+    // harici URL biçimi: mp:external/<hash>/https/<host>/<path>
+    iconUrl = "https://" + large.split("/https/")[1];
+  } else if (large && appId) {
+    iconUrl = `https://cdn.discordapp.com/app-assets/${appId}/${large}.png`;
+  } else if (small && appId) {
+    iconUrl = `https://cdn.discordapp.com/app-assets/${appId}/${small}.png`;
+  }
+
+  if (iconUrl) {
+    setGameIcon(iconUrl);
+  } else if (appId) {
+    // uygulamanın kendi ikonu (LoL, Valorant, VS Code...) — yedek zincirli
+    setGameIcon(appIconSources(appId)[0]);
+  } else if (dcGameIcon) {
+    dcGameIcon.classList.add("is-hidden");
+  }
+
+  // süre sayacı
+  if (dcGameTime) {
+    if (activity.timestamps?.start) {
+      dcGameStart = activity.timestamps.start;
+      dcGameTime.hidden = false;
+      tickGameTime();
+    } else {
+      dcGameStart = null;
+      dcGameTime.hidden = true;
+    }
+  }
+}
+
+function tickGameTime() {
+  if (!dcGameTime || !dcGameStart) return;
+
+  const diff = Date.now() - dcGameStart;
+  if (diff < 0) {
+    dcGameTime.textContent = "";
+    return;
+  }
+
+  const totalMin = Math.floor(diff / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+
+  dcGameTime.textContent = h > 0 ? `${h} sa ${m} dk oynuyor` : `${totalMin} dk oynuyor`;
+}
+
+setInterval(tickGameTime, 30000);
 
 function setAvatar(hash) {
   if (!dcAvatar) return;
@@ -310,6 +419,13 @@ function renderPresence(data) {
 
   const trackId = data.spotify?.track_id;
 
+  const activity = (data.activities || []).find(
+    (a) => a.type !== 4 && a.name !== "Spotify" && a.name !== "Custom Status"
+  );
+
+  // oyun/uygulama aktivitesi (logo + detay + süre)
+  renderActivity(activity);
+
   if (data.listening_to_spotify && trackId) {
     setPlayer(trackId, "Spotify'da çalıyor");
 
@@ -320,11 +436,10 @@ function renderPresence(data) {
 
   showFeaturedTrack();
 
-  if (dcIdle) dcIdle.hidden = false;
-
-  const activity = (data.activities || []).find(
-    (a) => a.type !== 4 && a.name !== "Spotify" && a.name !== "Custom Status"
-  );
+  if (dcIdle) {
+    // aktivite kartta zaten gösteriliyorsa metni tekrar etme
+    dcIdle.hidden = !!activity;
+  }
 
   if (dcIdleText) {
     dcIdleText.textContent = activity
@@ -340,6 +455,7 @@ function renderPresence(data) {
 function renderOfflineFallback() {
   setStatus("offline");
   showFeaturedTrack();
+  renderActivity(null);
 
   if (dcIdle) dcIdle.hidden = false;
   if (dcIdleText) dcIdleText.textContent = "Canlı durum kapalı.";
