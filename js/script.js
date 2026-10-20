@@ -220,7 +220,7 @@ const defaultAvatar = (() => {
 
 /* canlı şarkı yokken çalar; track_id boş bırakırsan çalar gizlenir */
 const FEATURED_TRACK = {
-  id: "7uI6R3KoJWxuXjvBHIr5lW",
+  id: "1HcbuJlFXlXaYw1S1M04KG",
   label: "Kod yazarken",
 };
 
